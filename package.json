@@ -1,0 +1,14 @@
+{
+  "name": "test-ts",
+  "version": "1.0.0",
+  "description": "Do test or just exercising to dirve away boring time",
+  "main": "main.js",
+  "scripts": {
+    "dev": "tsnd --respawn main.ts"
+  },
+  "author": "Alfie Qashwa",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0"
+  }
+}
