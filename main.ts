@@ -177,7 +177,8 @@ function validateSchedule(input: IAttendanceCardSchedule[]): string {
 
     //* 2b. Check if two ranges overlap
     const hasOverlapRange = data.some((s) =>
-      (s.startInTime as string) < (s.endOutTime as string) && (s.startOutTime as string) < (s.endInTime as string)
+      (!!s.startInTime && !!s.endInTime && !!s.startOutTime && !!s.endOutTime)
+      && s.startInTime < s.endOutTime && s.startOutTime < s.endInTime
     )
 
     if (isNullOrEmptyStringInTime) {
