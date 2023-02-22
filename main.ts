@@ -166,27 +166,33 @@ function validateSchedule(input: IAttendanceCardSchedule[]): string {
   //? 2. VALIDATION
 
   //* 2a. Check if there's null time
-  const isNullOrEmptyStringInTime = convertedTime.some((s) =>
-    (s.startInTime == null || INTERNET_BORN)
-    || (s.endInTime == null || INTERNET_BORN)
-    || (s.startOutTime == null || INTERNET_BORN)
-    || (s.endOutTime == null || INTERNET_BORN)
-  )
-
-  console.log(`isNullTime::: `, isNullOrEmptyStringInTime)
+  function isNullOrEmptyStringInTime(data: IAttendanceCardSchedule[]): boolean {
+    return data.some((s) =>
+      (s.startInTime == null || INTERNET_BORN)
+      || (s.endInTime == null || INTERNET_BORN)
+      || (s.startOutTime == null || INTERNET_BORN)
+      || (s.endOutTime == null || INTERNET_BORN)
+    )
+  }
 
   //* 2b. Check if two ranges overlap
-
-  const filterScheduleHasOverlapRange =
-    !isNullOrEmptyStringInTime &&
-    convertedTime.filter((s) => (
+  function isScheduleHasOverlapRange(data: IAttendanceCardSchedule[]): boolean {
+    return data.some((s) => (
       (!!s.startInTime && !!s.endInTime && !!s.startOutTime && !!s.endOutTime)
       && (s?.startInTime < s?.endOutTime && s?.startOutTime < s?.endInTime)
-
     ))
 
+  }
 
-  console.log(`filterScheduleHasOverlapRange::: `, filterScheduleHasOverlapRange)
+  //* combine 2a & 2b
+  function validation(data: IAttendanceCardSchedule[]): boolean {
+    return isNullOrEmptyStringInTime(data) &&
+      isScheduleHasOverlapRange(data)
+  }
+
+  const testingValidation = validation(convertedTime)
+
+  console.log(`TESTING_VALIDATION::: `, testingValidation)
   return ""
 }
 
