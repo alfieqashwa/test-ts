@@ -2,10 +2,10 @@ const DATA = [
   {
     id: "1",
     name: "Jadwal Mengajar 1",
-    startInTime: "06:00",
-    endInTime: "07:00",
-    startOutTime: "13:00",
-    endOutTime: "",
+    startInTime: "07:00",
+    endInTime: "09:01",
+    startOutTime: "09:00",
+    endOutTime: "13:00",
     days: [
       { name: "Senin", enabled: true },
       { name: "Selasa", enabled: true },
@@ -22,9 +22,9 @@ const DATA = [
   {
     id: "2",
     name: "Jadwal Mengajar 2",
-    startInTime: "06:00",
-    endInTime: "07:00",
-    startOutTime: "14:00",
+    startInTime: "12:00",
+    endInTime: "13:00",
+    startOutTime: "17:00",
     endOutTime: "18:00",
     days: [
       { name: "Senin", enabled: true },
@@ -168,7 +168,7 @@ function validateSchedule(input: IAttendanceCardSchedule[]): string {
   function validation(data: IAttendanceCardSchedule[]): void {
 
     //* 2a. Check if there's null time
-    const isNullOrEmptyStringInTime = data.some((s) =>
+    const isNullOrEmptyStringInTime = data?.some((s) =>
       (s.startInTime == null || s.startInTime === INTERNET_BORN)
       || (s.endInTime == null || s.endInTime === INTERNET_BORN)
       || (s.startOutTime == null || s.startOutTime === INTERNET_BORN)
@@ -176,10 +176,9 @@ function validateSchedule(input: IAttendanceCardSchedule[]): string {
     )
 
     //* 2b. Check if two ranges overlap
-    const isScheduleHasOverlapRange = !isNullOrEmptyStringInTime && data.some((s) => (
-      (!!s.startInTime && !!s.endInTime && !!s.startOutTime && !!s.endOutTime)
-      && (s?.startInTime < s?.endOutTime && s?.startOutTime < s?.endInTime)
-    ))
+    const hasOverlapRange = data.some((s) =>
+      (s.startInTime as string) < (s.endOutTime as string) && (s.startOutTime as string) < (s.endInTime as string)
+    )
 
     if (isNullOrEmptyStringInTime) {
       console.log(`Failed. There's at least one null value in time`)
@@ -187,12 +186,18 @@ function validateSchedule(input: IAttendanceCardSchedule[]): string {
       console.log(`Success. There's no null value in time`)
     }
 
-    // TODO: WIP overlap range validation
-    // if (isScheduleHasOverlapRange) {
-    //   console.log(`Failed. There's at least one overlap range schedule`)
-    // } else {
-    //   console.log(`Success. There's no overlap range schedule`)
-    // }
+    if (isNullOrEmptyStringInTime) return
+    if (hasOverlapRange) {
+      console.group(`:::hasOverlapRange::: `)
+      console.log(`hasOverlapRange::: `, hasOverlapRange)
+      console.log(`Failed. There's at least one overlap range schedule`)
+      console.groupEnd()
+    } else {
+      console.group(`:::hasOverlapRange::: `)
+      console.log(hasOverlapRange)
+      console.log(`Success. There's no overlap range schedule`)
+      console.groupEnd()
+    }
   }
 
   validation(convertedTime)
